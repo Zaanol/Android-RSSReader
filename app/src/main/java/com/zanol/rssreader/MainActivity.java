@@ -30,13 +30,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Parametros: envio, progresso, resultado
-    private class DownloadData extends AsyncTask<String, Void, String> {
+    private static class DownloadData extends AsyncTask<String, Void, String> {
         private static final String TAG = "DownloadData";
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.d(TAG, "onPostExecute: o parâmetro recebido é " + s);
+//            Log.d(TAG, "onPostExecute: o parâmetro recebido é " + s);
+            ParseApplications parser = new ParseApplications();
+            parser.parse(s);
         }
 
         @Override
