@@ -1,10 +1,13 @@
 package com.zanol.rssreader;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -29,10 +32,44 @@ public class MainActivity extends AppCompatActivity {
 
         rssListView = findViewById(R.id.rssListView);
 
-        Log.d(TAG, "onCreate: iniciando a AsyncTask");
+        downloadUrl("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.feeds_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        String feedUrl;
+
+        switch (id) {
+            case R.id.mnuFree:
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml";
+                break;
+            case R.id.mnuPaid:
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/toppaidapplications/limit=10/xml";
+                break;
+            case R.id.mnuSongs:
+                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=10/xml";
+                break;
+            default:
+                //Caso haja submenu
+                return super.onOptionsItemSelected(item);
+        }
+
+        downloadUrl(feedUrl);
+        return true;
+    }
+
+    private void downloadUrl(String feedUrl) {
+        Log.d(TAG, "downloadUrl: iniciando a AsyncTask");
         DownloadData downloadData = new DownloadData();
-        downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
-        Log.d(TAG, "onCreate: terminou.");
+        downloadData.execute(feedUrl);
+        Log.d(TAG, "downloadUrl: terminou.");
     }
 
     //Parametros: envio, progresso, resultado
@@ -46,21 +83,22 @@ public class MainActivity extends AppCompatActivity {
             ParseApplications parser = new ParseApplications();
             parser.parse(s);
 
-/*            Forma default de listView
-            ArrayAdapter<FeedEntry> arrayAdapter = new ArrayAdapter<>(
+//            Forma default de listView
+/*            ArrayAdapter<FeedEntry> arrayAdapter = new ArrayAdapter<>(
                     MainActivity.this, R.layout.list_item, parser.getApplications()
             );
 
             rssListView.setAdapter(arrayAdapter);*/
 
-/*            Forma modificada de Layout com textos
+//            Forma modificada de Layout com textos
             FeedAdapter feedAdapter = new FeedAdapter(
                     MainActivity.this, R.layout.list_records, parser.getApplications()
-            );*/
-
-            FeedImageAdapter feedAdapter = new FeedImageAdapter(
-                    MainActivity.this, R.layout.list_records_with_imagem, parser.getApplications()
             );
+
+//            Forma modificada de layout com imagem
+            /*FeedImageAdapter feedAdapter = new FeedImageAdapter(
+                    MainActivity.this, R.layout.list_records_with_imagem, parser.getApplications()
+            );*/
 
             rssListView.setAdapter(feedAdapter);
         }
