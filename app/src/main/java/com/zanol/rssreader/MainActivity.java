@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,10 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private static ListView rssListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        rssListView = findViewById(R.id.rssListView);
 
         Log.d(TAG, "onCreate: iniciando a AsyncTask");
         DownloadData downloadData = new DownloadData();
@@ -30,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Parametros: envio, progresso, resultado
-    private static class DownloadData extends AsyncTask<String, Void, String> {
+    private class DownloadData extends AsyncTask<String, Void, String> {
         private static final String TAG = "DownloadData";
 
         @Override
@@ -39,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
 //            Log.d(TAG, "onPostExecute: o parâmetro recebido é " + s);
             ParseApplications parser = new ParseApplications();
             parser.parse(s);
+
+            ArrayAdapter<FeedEntry> arrayAdapter = new ArrayAdapter<>(
+                    MainActivity.this, R.layout.list_item, parser.getApplications()
+            );
+
+            rssListView.setAdapter(arrayAdapter);
         }
 
         @Override
