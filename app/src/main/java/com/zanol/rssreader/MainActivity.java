@@ -46,11 +46,18 @@ public class MainActivity extends AppCompatActivity {
             ParseApplications parser = new ParseApplications();
             parser.parse(s);
 
+/*            Forma default de listView
             ArrayAdapter<FeedEntry> arrayAdapter = new ArrayAdapter<>(
                     MainActivity.this, R.layout.list_item, parser.getApplications()
             );
 
-            rssListView.setAdapter(arrayAdapter);
+            rssListView.setAdapter(arrayAdapter);*/
+
+            FeedAdapter feedAdapter = new FeedAdapter(
+                    MainActivity.this, R.layout.list_records, parser.getApplications()
+            );
+
+            rssListView.setAdapter(feedAdapter);
         }
 
         @Override
