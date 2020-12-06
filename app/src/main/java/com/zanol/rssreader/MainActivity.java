@@ -53,8 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
             rssListView.setAdapter(arrayAdapter);*/
 
+/*            Forma modificada de Layout com textos
             FeedAdapter feedAdapter = new FeedAdapter(
                     MainActivity.this, R.layout.list_records, parser.getApplications()
+            );*/
+
+            FeedImageAdapter feedAdapter = new FeedImageAdapter(
+                    MainActivity.this, R.layout.list_records_with_imagem, parser.getApplications()
             );
 
             rssListView.setAdapter(feedAdapter);
