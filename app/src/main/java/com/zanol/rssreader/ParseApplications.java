@@ -41,7 +41,6 @@ public class ParseApplications {
                 String tag = pullParser.getName();
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        Log.d(TAG, "parse: Começando a tag: " + tag);
                         if (tag.equalsIgnoreCase("entry")) {
                             isEntry = true;
                             entry = new FeedEntry();
@@ -51,7 +50,6 @@ public class ParseApplications {
                         textValue = pullParser.getText();
                         break;
                     case XmlPullParser.END_TAG:
-                        Log.d(TAG, "parse: Terminando a tag: " + tag);
                         if (isEntry) {
                             if (tag.equalsIgnoreCase("entry")) {
                                 applications.add(entry);
@@ -72,12 +70,6 @@ public class ParseApplications {
                 }
 
                 eventType = pullParser.next();
-            }
-
-            for (FeedEntry feedEntry : applications) {
-                Log.d(TAG, "parse: ****************************");
-                Log.d(TAG, feedEntry.toString());
-                Log.d(TAG, "parse: ****************************");
             }
         } catch (Exception e) {
             Log.e(TAG, "parse: Erro ao fazer parse:" + e.getLocalizedMessage());

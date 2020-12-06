@@ -13,7 +13,6 @@ import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -23,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private String feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/%s/limit=%d/xml";
+    private int feedLimit = 10;
+    private String feedType = "topfreeapplications";
     private static ListView rssListView;
 
     @Override
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         rssListView = findViewById(R.id.rssListView);
 
-        downloadUrl("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml");
+        downloadUrl(String.format(feedUrl, feedType, feedLimit));
     }
 
     @Override
@@ -44,24 +46,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        String feedUrl;
 
         switch (id) {
             case R.id.mnuFree:
-                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml";
+                feedType = "topfreeapplications";
                 break;
             case R.id.mnuPaid:
-                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/toppaidapplications/limit=10/xml";
+                feedType = "toppaidapplications";
                 break;
             case R.id.mnuSongs:
-                feedUrl = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=10/xml";
+                feedType = "topsongs";
+                break;
+            case R.id.mnu10:
+            case R.id.mnu25:
+                if (!item.isChecked()) {
+                    item.setChecked(true);
+                    feedLimit = 35 - feedLimit;
+                }
                 break;
             default:
                 //Caso haja submenu
                 return super.onOptionsItemSelected(item);
         }
 
-        downloadUrl(feedUrl);
+        downloadUrl(String.format(feedUrl, feedType, feedLimit));
         return true;
     }
 
